@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "639144302150",
+    "project_id": "authentication-c27c2",
+    "storage_bucket": "authentication-c27c2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:639144302150:android:418cd1bd6f29aa9cfd5c47",
+        "android_client_info": {
+          "package_name": "com.mastercoding.authentication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_IlkosXabprJyjHi0cu9Z8Z7Hqr9laXs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
