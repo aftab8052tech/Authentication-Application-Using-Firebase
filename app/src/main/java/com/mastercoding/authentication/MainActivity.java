@@ -1,6 +1,7 @@
 package com.mastercoding.authentication;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
@@ -14,6 +15,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -28,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     EditText inputEmail , inputPassword;
     Button btnLogin;
     String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+   // String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
     ProgressDialog progressDialog;
 
     // Firebase database //
@@ -38,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
     ImageView btnFacebook;
     ImageView btnGithub;
 
+    GoogleSignInOptions gso;
+    GoogleSignInClient gsc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,13 +60,21 @@ public class MainActivity extends AppCompatActivity {
         inputEmail = findViewById(R.id.inputEmail);
         inputPassword = findViewById(R.id.inputPassword);
         btnLogin = findViewById(R.id.btnLogin);
-        btnGoogle = findViewById(R.id.btnGoogle);
+
         btnFacebook = findViewById(R.id.btnFacebook);
         btnGithub = findViewById(R.id.btnGithub);
         progressDialog = new ProgressDialog(this);
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
 
+        btnGoogle = findViewById(R.id.btnGoogle);
+        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
+        gsc = GoogleSignIn.getClient(this , gso);
+
+        GoogleSignInAccount acc = GoogleSignIn.getLastSignedInAccount(this);
+        if(acc != null){
+            navigateToSecondActivity();
+        }
 
 
         createnewAccount.setOnClickListener(new View.OnClickListener() {
@@ -77,9 +94,10 @@ public class MainActivity extends AppCompatActivity {
         btnGoogle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this , GoogleSignInActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                startActivity(intent);
+//                Intent intent = new Intent(MainActivity.this , GoogleSignInActivity.class);
+//                intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+//                startActivity(intent);
+                 signIn();
             }
         });
 
@@ -101,6 +119,32 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+     void signIn() {
+        Intent signInIntent = gsc.getSignInIntent();
+        startActivityForResult(signInIntent , 1000);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1000){
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            try {
+                task.getResult(ApiException.class);
+                navigateToSecondActivity();
+            } catch (ApiException e) {
+                Toast.makeText(getApplicationContext(), "Something went wrong",
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+     void navigateToSecondActivity() {
+        finish();
+        Intent intent = new Intent(MainActivity.this , SecondActivity.class);
+        startActivity(intent);
     }
 
     private void performLogin() {

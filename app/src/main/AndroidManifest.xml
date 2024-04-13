@@ -15,6 +15,9 @@
         android:theme="@style/Theme.Authentication"
         tools:targetApi="31">
         <activity
+            android:name=".SecondActivity"
+            android:exported="false" />
+        <activity
             android:name=".GIthubAuthActivity"
             android:exported="false" />
         <activity
